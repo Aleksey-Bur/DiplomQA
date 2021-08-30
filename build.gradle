@@ -32,6 +32,7 @@ dependencies {
     testImplementation 'mysql:mysql-connector-java:8.0.23'
     testImplementation 'postgresql:postgresql:9.1-901-1.jdbc4'
     implementation group: 'commons-dbutils', name: 'commons-dbutils', version: '1.7'
+    testImplementation 'io.rest-assured:rest-assured:4.2.0'
     testImplementation 'io.qameta.allure:allure-selenide:2.13.0'
 }
 

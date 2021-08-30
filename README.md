@@ -1,18 +1,47 @@
-# Дипломный проект профессии «Тестировщик»
+# Дипломный проект по курсу «Тестировщик ПО»
 
 ## Тестовая документация
 [План автоматизации](https://github.com/Aleksey-Bur/DiplomQA/blob/master/Documents/Plan.md)
-## **Процедура запуска авто-тестов**
 
-##### Для запуска автотестов необходимо:
-1. склонировать репозиторий командой `git clone`;
-2. с официального сайта https://hub.docker.com/ скачать образы MySql, PostgreSQL и Node.js с помощью команды `docker pull <имя_образа>` (необходим установленный Docker);
-3. запустить контейнер с MySql, PostgreSQL и Node.js с помощью команды `docker-compose up -d --build`;
-4. запустить приложение:
-* для использования БД MySQL запустить команду `java -Dspring.datasource.url=jdbc:mysql://localhost:3306/app -jar aqa-shop.jar`;
-* для использования БД PostgreSQL запустить команду `java -Dspring.datasource.url=jdbc:postgresql://localhost:5432/app -jar aqa-shop.jar`;
-5. запустить автотесты:
-* при использовании БД MySQL запустить команду `gradlew -Ddb.url=jdbc:mysql://localhost:3306/app clean tests`;
-* при использовании БД PostgreSQL запустить команду `gradlew -Ddb.url=jdbc:postgresql://localhost:5432/app clean tests`;
-6. Для формирования отчета в трминале ввести команду `gradlew allureServe`. Отчет автоматически откроется в браузере.
-7. после завершения автотестов необходимо остановить контейнеры с помощью команды `docker-compose down`.
+### О проекте
+Приложение представляет из себя веб-сервис "Путешествие дня". Приложение предлагает купить тур по определённой цене с помощью двух способов:
+
+1. Обычная оплата по дебетовой карте
+2. Уникальная технология: выдача кредита по данным банковской карты
+
+Само приложение не обрабатывает данные по картам, а пересылает их банковским сервисам:
+
+* сервису платежей (далее - Payment Gate)
+* кредитному сервису (далее - Credit Gate)
+
+Приложение должно в собственной СУБД сохранять информацию о том, каким способом был совершён платёж и успешно ли он был совершён (при этом данные карт сохранять не допускается).
+
+### Prerequisites
+* Установать и запустить Docker Desktop. Это можно сделать [здесь](https://docs.docker.com/) в зависимости от операционной системы.
+* Установить [IntelliJ IDEA](https://www.jetbrains.com/ru-ru/idea/).
+* Установить [Git и GitHub](https://desktop.github.com/).
+
+### Установка и запуск
+
+1. Склонировать репозиторий git clone
+
+2. Запустить контейнер с MySql, PostgreSQL и Node.js используя команду docker-compose up -d --build (необходим установленный Docker);
+
+3. Запустить приложение:
+
+* для запуска под MySQL использовать команду
+java -Dspring.datasource.url=jdbc:mysql://localhost:3306/app -jar aqa-shop.jar
+* для запуска под PostgreSQL использовать команду
+java -Dspring.datasource.url=jdbc:postgresql://localhost:5432/app -jar aqa-shop.jar
+4. Запустить тесты:
+
+* для запуска под MySQL использовать команду
+gradlew -Ddb.url=jdbc:mysql://localhost:3306/app clean test
+
+* для запуска под PostgreSQL использовать команду
+gradlew -Ddb.url=jdbc:postgresql://localhost:5432/app clean test
+
+5. После окончания тестов завершить работу приложения (Ctrl+C), остановить контейнеры командой docker-compose down
+**Примечание**: Тесты запускаются для "http://localhost:8080/", чтобы изменить адрес, необходимо дополнительно указать -Dsut.url=... *Чтобы изменить логин и пароль, заданных по умолчанию, для подключения к БД, необходимо дополнительно указать -Ddb.user=... и -Ddb.password=...
+
+6. Для получения отчета (Allure) использовать команду gradlew allureServe
