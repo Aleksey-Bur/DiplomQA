@@ -23,25 +23,31 @@
 
 ### Установка и запуск
 
-1. Склонировать репозиторий git clone
+1. Склонировать репозиторий `git clone` 
 
-2. Запустить контейнер с MySql, PostgreSQL и Node.js используя команду docker-compose up -d --build (необходим установленный Docker);
+2. Запустить контейнер с MySql, PostgreSQL и Node.js используя команду `docker-compose up -d --build` (необходим установленный Docker);
 
 3. Запустить приложение:
 
 * для запуска под MySQL использовать команду
-java -Dspring.datasource.url=jdbc:mysql://localhost:3306/app -jar aqa-shop.jar
+
+`java -Dspring.datasource.url=jdbc:mysql://localhost:3306/app -jar aqa-shop.jar`
 * для запуска под PostgreSQL использовать команду
-java -Dspring.datasource.url=jdbc:postgresql://localhost:5432/app -jar aqa-shop.jar
+
+`java -Dspring.datasource.url=jdbc:postgresql://localhost:5432/app -jar aqa-shop.jar`
 4. Запустить тесты:
 
 * для запуска под MySQL использовать команду
-gradlew -Ddb.url=jdbc:mysql://localhost:3306/app clean test
+
+`gradlew -Ddb.url=jdbc:mysql://localhost:3306/app clean test`
 
 * для запуска под PostgreSQL использовать команду
-gradlew -Ddb.url=jdbc:postgresql://localhost:5432/app clean test
 
-5. После окончания тестов завершить работу приложения (Ctrl+C), остановить контейнеры командой docker-compose down
-**Примечание**: Тесты запускаются для "http://localhost:8080/", чтобы изменить адрес, необходимо дополнительно указать -Dsut.url=... *Чтобы изменить логин и пароль, заданных по умолчанию, для подключения к БД, необходимо дополнительно указать -Ddb.user=... и -Ddb.password=...
+`gradlew -Ddb.url=jdbc:postgresql://localhost:5432/app clean test`
 
-6. Для получения отчета (Allure) использовать команду gradlew allureServe
+5. После окончания тестов завершить работу приложения (Ctrl+C), остановить контейнеры командой `docker-compose down`
+
+**Примечание**: Тесты запускаются для "http://localhost:8080/", чтобы изменить адрес, необходимо дополнительно указать `-Dsut.url=...` 
+*Чтобы изменить логин и пароль, заданных по умолчанию, для подключения к БД, необходимо дополнительно указать `-Ddb.user=... и -Ddb.password=...`
+
+6. Для получения отчета (Allure) использовать команду `gradlew allureServe`
