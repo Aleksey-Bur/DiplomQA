@@ -1,58 +1,93 @@
 package data;
 
+
+import java.time.LocalDate;
+
 public class DataHelper {
     private DataHelper() {
     }
 
     public static Card getApprovedCard() {
-        return new Card("4444444444444441", "12", "24", "Ivan Petrov", "123");
+        LocalDate today = LocalDate.now();
+        String month = String.valueOf(today).substring(5,7);
+        String year = String.valueOf(today).substring(2,4);
+        return new Card("4444 4444 4444 4441", month, year, "Ivan Petrov", "123");
     }
 
     public static Card getDeclinedCard() {
-        return new Card("4444444444444442", "12", "24", "Ivan Petrov", "123");
+        LocalDate today = LocalDate.now();
+        String month = String.valueOf(today).substring(5,7);
+        String year = String.valueOf(today).substring(2,4);
+        return new Card("4444 4444 4444 4442", month, year, "Ivan Petrov", "123");
     }
 
-    public static Card getNonexistentCard() {
-        return new Card("7777777777777777", "12", "24", "Ivan Petrov", "123");
+    public static Card getNonExistentCard() {
+        LocalDate today = LocalDate.now();
+        String month = String.valueOf(today).substring(5,7);
+        String year = String.valueOf(today).substring(2,4);
+        return new Card("1111 1111 1111 1111", month, year, "Ivan Petrov", "123");
     }
 
-    public static Card getIncompleteNumberCard() {
-        return new Card("444444444444444", "12", "24", "Ivan Petrov", "123");
-    }
-
-    public static Card getMonthZeroCard() {
-        return new Card("4444444444444441", "00", "24", "Ivan Petrov", "123");
-    }
-
-    public static Card getNonexistentMonthCard() {
-        return new Card("4444444444444441", "13", "24", "Ivan Petrov", "123");
+    public static Card getIncorrectNumberCard() {
+        LocalDate today = LocalDate.now();
+        String month = String.valueOf(today).substring(5,7);
+        String year = String.valueOf(today).substring(2,4);
+        return new Card("4444 4444 4444 444", month, year, "Ivan Petrov", "123");
     }
 
     public static Card getExpiredMonthCard() {
-        return new Card("4444444444444441", "01", "21", "Ivan Petrov", "123");
+        LocalDate today = LocalDate.now();
+        LocalDate lastMonth = today.minusMonths(1);
+        String month = String.valueOf(lastMonth).substring(5,7);
+        String year = String.valueOf(today).substring(2,4);
+        return new Card("4444 4444 4444 4441", month, year, "Ivan Petrov", "123");
+    }
+
+    public static Card getIncorrectMonthCard(String month) {
+        LocalDate today = LocalDate.now();
+        String year = String.valueOf(today).substring(2,4);
+        return new Card("4444 4444 4444 4441", month, year, "Ivan Petrov", "123");
+    }
+
+    public static Card getIncorrectFormatMonthCard() {
+        LocalDate today = LocalDate.now();
+        String year = String.valueOf(today).substring(2,4);
+        return new Card("4444 4444 4444 4441", "0", year, "Ivan Petrov", "123");
     }
 
     public static Card getExpiredYearCard() {
-        return new Card("4444444444444441", "12", "20", "Ivan Petrov", "123");
+        LocalDate today = LocalDate.now();
+        LocalDate lastYear = today.minusYears(1);
+        String month = String.valueOf(today).substring(5,7);
+        String year = String.valueOf(lastYear).substring(2,4);
+        return new Card("4444 4444 4444 4441", month, year, "Ivan Petrov", "123");
     }
 
-    public static Card getIncorrectMonthCard() {
-        return new Card("4444444444444441", "0", "20", "Ivan Petrov", "123");
+    public static Card getYearMore5Card() {
+        LocalDate today = LocalDate.now();
+        LocalDate newYear = today.plusYears(6);
+        String month = String.valueOf(today).substring(5,7);
+        String year = String.valueOf(newYear).substring(2,4);
+        return new Card("4444 4444 4444 4441", month, year, "Ivan Petrov", "123");
     }
 
     public static Card getIncorrectYearCard() {
-        return new Card("4444444444444441", "12", "0", "Ivan Petrov", "123");
+        LocalDate today = LocalDate.now();
+        String month = String.valueOf(today).substring(5,7);
+        return new Card("4444 4444 4444 4441", month, "0", "Ivan Petrov", "123");
     }
 
-    public static Card getIncorrectNameCard() {
-        return new Card("4444444444444441", "12", "24", "Иван1234*!):%;", "123");
+    public static Card getIncorrectHolderCard() {
+        LocalDate today = LocalDate.now();
+        String month = String.valueOf(today).substring(5,7);
+        String year = String.valueOf(today).substring(2,4);
+        return new Card("4444 4444 4444 4441", month, year, "Petrov!@#$%^&*()_+", "123");
     }
 
     public static Card getIncorrectCVCCard() {
-        return new Card("4444444444444441", "12", "24", "Ivan Petrov", "1");
-    }
-
-    public static Card getEmptyCard() {
-        return new Card("", "", "", "", "");
+        LocalDate today = LocalDate.now();
+        String month = String.valueOf(today).substring(5,7);
+        String year = String.valueOf(today).substring(2,4);
+        return new Card("4444 4444 4444 4441", month, year, "Ivan Petrov", "0");
     }
 }

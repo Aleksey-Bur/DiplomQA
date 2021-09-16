@@ -28,13 +28,12 @@ repositories {
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
-    implementation group: 'com.codeborne', name: 'selenide', version: '5.20.1'
+    testImplementation 'com.codeborne:selenide:5.19.0'
     testImplementation 'mysql:mysql-connector-java:8.0.23'
     testImplementation 'postgresql:postgresql:9.1-901-1.jdbc4'
-    implementation group: 'commons-dbutils', name: 'commons-dbutils', version: '1.7'
+    testImplementation 'commons-dbutils:commons-dbutils:1.7'
     testImplementation 'io.rest-assured:rest-assured:4.2.0'
     testImplementation 'io.qameta.allure:allure-selenide:2.13.0'
-}
 
 test {
     useJUnitPlatform()
@@ -44,4 +43,5 @@ test {
     systemProperty 'db.user', System.getProperty('db.user', "app")
     systemProperty 'db.password', System.getProperty('db.password', "pass")
     systemProperty 'sut.url', System.getProperty('sut.url', "http://localhost:8080/")
+}
 }

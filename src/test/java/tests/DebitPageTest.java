@@ -1,31 +1,33 @@
 package tests;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
-import data.DataHelper;
 import data.SqlHelper;
+import data.Card;
+import data.DataHelper;
 import io.qameta.allure.selenide.AllureSelenide;
 import lombok.val;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import pages.StartPage;
 
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
 public class DebitPageTest {
     @BeforeAll
-    static void setUp() {
+    static void setUpAll() {
         SelenideLogger.addListener("allure", new AllureSelenide());
     }
 
     @BeforeEach
-    public void openHost() {
+    public void setUpEach() {
         String url = System.getProperty("sut.url");
         open(url);
-    }
-
-    @AfterEach
-    public void clearBD() {
-        SqlHelper.clearDB();
     }
 
     @AfterAll
@@ -34,119 +36,117 @@ public class DebitPageTest {
     }
 
     @Test
-    void shouldBuyWithApprovedCard() {
+    void should1PaymentByCardWithStatusApproved() {
+        SqlHelper.clearData();
+        Card card = DataHelper.getApprovedCard();
         val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getApprovedCard());
-        debitPage.checkStatusOk();
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        paymentPage.waitNotificationOk();
         assertEquals("APPROVED", SqlHelper.getPaymentStatus());
     }
 
     @Test
-    void  shouldBuyWithDeclinedCard() {
+    void should2PaymentByCardWithStatusDecline() {
+        SqlHelper.clearData();
+        Card card = DataHelper.getDeclinedCard();
         val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getDeclinedCard());
-        debitPage.checkStatusDenied();
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        paymentPage.waitNotificationError();
         assertEquals("DECLINED", SqlHelper.getPaymentStatus());
     }
 
     @Test
-    void shouldBuyWithNonexistentCard() {
+    void should3PaymentByNonExistentCard() {
+        SqlHelper.clearData();
+        Card card = DataHelper.getNonExistentCard();
         val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getNonexistentCard());
-        debitPage.checkStatusDenied();
-        assertEquals("0", SqlHelper.getOrderCount());
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        paymentPage.waitNotificationError();
+        assertEquals(0, SqlHelper.countRecords());
     }
 
     @Test
-    void shouldBuyWithIncompleteCard() {
+    void should4PaymentByIncorrectNumberCard() {
+        Card card = DataHelper.getIncorrectNumberCard();
         val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getIncompleteNumberCard());
-        debitPage.checkStatusInvalidField();
-        assertEquals("Неверный формат", debitPage.checkStatusInvalidField());
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        assertEquals("Неверный формат", paymentPage.getInputInvalid());
     }
 
     @Test
-    void shouldBuyWithMonthZeroCard() {
+    void should5PaymentByExpiredMonthCard() {
+        Card card = DataHelper.getExpiredMonthCard();
         val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getMonthZeroCard());
-        debitPage.checkStatusInvalidField();
-        assertEquals("Неверный формат", debitPage.checkStatusInvalidField());
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        assertEquals("Истек срок действия карты", paymentPage.getInputInvalid());
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"'00'", "'13'"})
+    void should6PaymentByIncorrectMonthCard(String month) {
+        Card card = DataHelper.getIncorrectMonthCard(month);
+        val startPage = new StartPage();
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        assertEquals("Неверно указан срок действия карты", paymentPage.getInputInvalid());
     }
 
     @Test
-    void shouldBuyWithNonexistentMonthCard() {
+    void should7PaymentByIncorrectFormatMonthCard() {
+        Card card = DataHelper.getIncorrectFormatMonthCard();
         val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getNonexistentMonthCard());
-        debitPage.checkStatusInvalidField();
-        assertEquals("Неверно указан срок действия карты", debitPage.checkStatusInvalidField());
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        assertEquals("Неверный формат", paymentPage.getInputInvalid());
     }
 
     @Test
-    void shouldBuyWithExpiredMonthCard() {
+    void should8PaymentByExpiredYearCard() {
+        Card card = DataHelper.getExpiredYearCard();
         val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getExpiredMonthCard());
-        debitPage.checkStatusInvalidField();
-        assertEquals("Истёк срок действия карты", debitPage.checkStatusInvalidField());
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        assertEquals("Истёк срок действия карты", paymentPage.getInputInvalid());
     }
 
     @Test
-    void shouldBuyWithExpiredYearCard() {
+    void should9PaymentByYearMore5Card() {
+        Card card = DataHelper.getYearMore5Card();
         val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getExpiredYearCard());
-        debitPage.checkStatusInvalidField();
-        assertEquals("Истёк срок действия карты", debitPage.checkStatusInvalidField());
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        assertEquals("Неверно указан срок действия карты", paymentPage.getInputInvalid());
     }
 
     @Test
-    void shouldBuyWithIncorrectMonthCard() {
+    void should10PaymentByIncorrectYearCard() {
+        Card card = DataHelper.getIncorrectYearCard();
         val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getIncorrectMonthCard());
-        debitPage.checkStatusInvalidField();
-        assertEquals("Неверный формат", debitPage.checkStatusInvalidField());
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        assertEquals("Неверный формат", paymentPage.getInputInvalid());
     }
 
     @Test
-    void shouldBuyWithIncorrectYearCard() {
+    void should11PaymentByIncorrectHolderCard() {
+        Card card = DataHelper.getIncorrectHolderCard();
         val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getIncorrectYearCard());
-        debitPage.checkStatusInvalidField();
-        assertEquals("Неверный формат", debitPage.checkStatusInvalidField());
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        assertEquals("Неверный формат", paymentPage.getInputInvalid());
     }
 
     @Test
-    void shouldBuyWithIncorrectNameCard() {
+    void should12PaymentByIncorrectCvcCard() {
+        Card card = DataHelper.getIncorrectCVCCard();
         val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getIncorrectNameCard());
-        debitPage.checkStatusInvalidField();
-        assertEquals("Неверный формат", debitPage.checkStatusInvalidField());
-    }
-
-    @Test
-    void shouldBuyWithIncorrectCVCCard() {
-        val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getIncorrectCVCCard());
-        debitPage.checkStatusInvalidField();
-        assertEquals("Неверный формат", debitPage.checkStatusInvalidField());
-    }
-
-    @Test
-    void shouldBuyWithEmptyFieldCard() {
-        val startPage = new StartPage();
-        val debitPage = startPage.openDebitPage();
-        debitPage.inputField(DataHelper.getEmptyCard());
-        debitPage.checkStatusInvalidField();
-        assertEquals("Поле обязательно для заполнения", debitPage.checkStatusInvalidField());
+        val paymentPage = startPage.openDebitPage();
+        paymentPage.fillData(card);
+        assertEquals("Неверный формат", paymentPage.getInputInvalid());
     }
 }
