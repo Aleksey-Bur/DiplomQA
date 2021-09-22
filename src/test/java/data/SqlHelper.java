@@ -29,22 +29,6 @@ public class SqlHelper {
         }
     }
 
-    public static Long countRecords() {
-        val countSQL = "SELECT COUNT(*) FROM order_entity;";
-        val runner = new QueryRunner();
-        Long count = null;
-        try (
-                val conn = DriverManager.getConnection(url, user, password
-                );
-        ) {
-            count = runner.query(conn, countSQL, new ScalarHandler<>());
-            System.out.println(count);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return count;
-    }
-
     public static String getStatus(String query) {
         val runner = new QueryRunner();
         String data = "";
@@ -59,7 +43,7 @@ public class SqlHelper {
         return data;
     }
 
-    public static String getPaymentStatus() {
+    public static String getDebitStatus() {
         val statusSQL = "SELECT status FROM payment_entity;";
         return getStatus(statusSQL);
     }

@@ -32,20 +32,23 @@ public class CreditPage {
         cardNumberField.setValue(card.getNumber());
         monthField.setValue(card.getMonth());
         yearField.setValue(card.getYear());
-        ownerField.setValue(card.getHolder());
+        ownerField.setValue(card.getName());
         cvcField.setValue(card.getCvc());
         continueButton.click();
     }
 
     public void waitNotificationOk() {
+
         notificationOK.shouldBe(visible, Duration.ofMillis(15000));
     }
 
     public void waitNotificationError() {
+
         notificationError.shouldBe(visible, Duration.ofMillis(15000));
     }
 
     public String getInputInvalid() {
+
         return inputInvalid.getText();
     }
 }

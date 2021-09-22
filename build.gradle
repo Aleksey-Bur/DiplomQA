@@ -29,11 +29,11 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
     testImplementation 'com.codeborne:selenide:5.19.0'
-    testImplementation 'mysql:mysql-connector-java:8.0.23'
-    testImplementation 'postgresql:postgresql:9.1-901-1.jdbc4'
+    testImplementation 'mysql:mysql-connector-java:8.0.22'
+    testImplementation 'org.postgresql:postgresql:42.2.20'
     testImplementation 'commons-dbutils:commons-dbutils:1.7'
-    testImplementation 'io.rest-assured:rest-assured:4.2.0'
-    testImplementation 'io.qameta.allure:allure-selenide:2.13.0'
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation 'io.qameta.allure:allure-selenide:2.13.9'
 
 test {
     useJUnitPlatform()
